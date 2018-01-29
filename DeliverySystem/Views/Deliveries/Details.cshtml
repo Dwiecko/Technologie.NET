@@ -1,0 +1,73 @@
+﻿@model DeliverySystem.Models.Delivery
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Delivery</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.DeliveryStart)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DeliveryStart)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DeliveryEnd)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DeliveryEnd)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PhoneNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.City)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.City)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.StreetName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.StreetName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.EstimatedWeight)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.EstimatedWeight)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Amount)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Amount)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Category)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Category.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Product)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Product.Name)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.DeliveryID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

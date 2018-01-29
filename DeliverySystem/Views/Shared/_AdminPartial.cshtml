@@ -1,0 +1,23 @@
+﻿@using Microsoft.AspNetCore.Identity
+   @{ 
+       var data = ViewBag.AverageForAmount;
+    }
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@model string
+
+@if (!SignInManager.IsSignedIn(User))
+{
+    <center>
+        <h2>Please log in, if you want to use this application</h2>
+    </center>
+}
+else
+{
+    <center>
+        <br />
+        <p><b>Logged as @Model!</b></p>
+        <p>Now you can feel free to add some new deliveries</p>
+    </center>
+}

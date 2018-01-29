@@ -1,0 +1,56 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using DeliverySystem.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@{
+    ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">DeliverySystem</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                <li><a asp-area="" asp-controller="Products" asp-action="Index">Products</a></li>
+                <li><a asp-area="" asp-controller="Deliveries" asp-action="Index">Delivery</a></li>
+                <li><a asp-area="" asp-controller="Categories" asp-action="Index">Categories</a></li>
+
+            </ul>
+            @*@await Html.PartialAsync("_LoginPartial", @UserManager.GetUserName(User));*@
+
+        </div>
+    </div>
+</nav>
+<div class="container-fluid bg-2 text-center">
+    <h1>Working with us is so simple</h1>
+    <h2>Just create an account and start adding new deliveries</h2>
+    <h2>Many satisfied customers</h2>
+</div>
+@*<div class="row">
+    @await Html.PartialAsync("_AdminPartial", @UserManager.GetUserName(User))
+</div>*@
+<br />
+<br />
+<section>
+    <div class="alert alert-warning">
+        <h3 class="text-danger">What is a definition of delivery?</h3>
+        <p class="text-primary">The action of delivering letters, parcels, or goods, the process of giving birth, an act of throwing, bowling, or kicking a ball</p>
+        <p class="text-primary">a giving up or handing over; surrender.</p>
+        <p class="text-primary">the utterance or enunciation of words.</p>
+        <p class="text-primary">vocal and bodily behavior during the presentation of a speech: a speaker's fine delivery.</p>
+        <p class="text-primary">the state of being delivered of or giving birth to a child; parturition.</p>
+    </div>
+</section>
+
+<PageInfo page-info.CreatedAt="2018" page-info.Author="Dawid Więcko" page-info.Lecture="Technologie .NET">
+</PageInfo>
