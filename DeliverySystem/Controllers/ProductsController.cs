@@ -8,144 +8,66 @@ using Microsoft.EntityFrameworkCore;
 using DeliverySystem.Data;
 using DeliverySystem.Models;
 using Microsoft.AspNetCore.Authorization;
+using DeliverySystem.Repositories;
 
 namespace DeliverySystem.Controllers
 {
     [Authorize(Roles = "Administrator, User")]
     public class ProductsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private IProductsRepository _productsRepository;
 
-        public ProductsController(ApplicationDbContext context)
+        public ProductsController(IProductsRepository productsRepository)
         {
-            _context = context;
+            _productsRepository = productsRepository;
         }
 
         // GET: Products
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public IActionResult Index()
         {
-            return View(await _context.Product.ToListAsync());
+            var products = _productsRepository.GetAll();
+            return View(products);
         }
 
         // GET: Products/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Product
-                .SingleOrDefaultAsync(m => m.ProductID == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
+            var product = _productsRepository.Get(id);
+            if (product == null) return NotFound();
 
             return View(product);
-        }
-
-        // GET: Products/Create
-        public IActionResult Create()
-        {
-            return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductID,Name")] Product product)
+        public IActionResult Create([Bind("ProductID,Name")] Product product)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(product);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(product);
-        }
-
-        // GET: Products/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Product.SingleOrDefaultAsync(m => m.ProductID == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
+            _productsRepository.Add(product);
             return View(product);
         }
 
         // POST: Products/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductID,Name")] Product product)
+        public IActionResult Edit(int id, [Bind("ProductID,Name")] Product product)
         {
             if (id != product.ProductID)
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProductExists(product.ProductID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(product);
-        }
-
-        [Authorize(Roles = "Administrator")]
-        // GET: Products/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Product
-                .SingleOrDefaultAsync(m => m.ProductID == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
+            
             return View(product);
         }
 
         // POST: Products/Delete/5
+        [Authorize(Roles = "Administrator")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(Product product)
         {
-            var product = await _context.Product.SingleOrDefaultAsync(m => m.ProductID == id);
-            _context.Product.Remove(product);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool ProductExists(int id)
-        {
-            return _context.Product.Any(e => e.ProductID == id);
+            _productsRepository.Delete(product.ProductID);
+            return Redirect("Index");
         }
     }
 }
