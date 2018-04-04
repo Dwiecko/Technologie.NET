@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using DeliverySystem.Data;
 using DeliverySystem.Models;
+using DeliverySystem.Repositories;
+using DeliverySystem.Repository;
 
 namespace DeliverySystem
 {
@@ -30,8 +32,8 @@ namespace DeliverySystem
                     .AddDefaultTokenProviders();
 
                 services.AddScoped<ApplicationDbInitializer>();
-
-                services.AddMvc();
+                services.AddScoped<IProductsRepository, ProductsRepository>();
+            services.AddMvc();
             }
 
 

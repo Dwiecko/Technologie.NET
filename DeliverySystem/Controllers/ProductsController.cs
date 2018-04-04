@@ -26,48 +26,85 @@ namespace DeliverySystem.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var products = _productsRepository.GetAll();
-            return View(products);
+            return View(_productsRepository.GetAll().AsEnumerable());
         }
 
         // GET: Products/Details/5
-        public IActionResult Details(int? id)
+        public IActionResult Details(int id)
         {
             var product = _productsRepository.Get(id);
             if (product == null) return NotFound();
 
             return View(product);
         }
+        public ActionResult Create()
+        {
+            return View();
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("ProductID,Name")] Product product)
+        public ActionResult Create([Bind("ProductID,Name")] Product product)
         {
-            _productsRepository.Add(product);
+            if (ModelState.IsValid)
+            {
+                _productsRepository.Add(product);
+                return RedirectToAction("Index");
+            }
+
+            return View(product);
+        }
+
+        public ActionResult Edit(int? id)
+        {
+            Product product = _productsRepository.Get(id);
+            if (id != product.ProductID)
+            {
+                return NotFound();
+            }
             return View(product);
         }
 
         // POST: Products/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("ProductID,Name")] Product product)
+        public ActionResult Edit([Bind("ProductID,Name")] Product product)
         {
-            if (id != product.ProductID)
+            if (product == null)
             {
                 return NotFound();
             }
-            
+
+            if (ModelState.IsValid)
+            {
+                _productsRepository.Edit(product);
+                return RedirectToAction("Index");
+            }
             return View(product);
         }
 
         // POST: Products/Delete/5
-        [Authorize(Roles = "Administrator")]
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return BadRequest();
+            }
+            Product product = _productsRepository.Get(id);
+            if (product == null)
+            {
+                return BadRequest();
+            }
+            return View(product);
+        }
+
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(Product product)
+        public ActionResult DeleteConfirmed(int id)
         {
-            _productsRepository.Delete(product.ProductID);
-            return Redirect("Index");
+            _productsRepository.Delete(id);
+            return RedirectToAction("Index");
         }
     }
 }
