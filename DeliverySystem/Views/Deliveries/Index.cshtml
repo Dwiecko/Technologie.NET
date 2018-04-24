@@ -39,10 +39,6 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Product)
                 </th>
-                <th>Word</th>
-                <th>Count</th>
-
-                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -78,9 +74,9 @@
                     </td>
 
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.DeliveryID">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.DeliveryID">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.DeliveryID">Delete</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                     </td>
                 </tr>
             }
@@ -106,10 +102,4 @@
             }
         </tbody>
     </table>
-    @foreach (var item in data)
-    {
-        <p> @item.Word </p>
-        @Html.Partial("_StatsView", (int)(item.Count))
-    }
-
 }

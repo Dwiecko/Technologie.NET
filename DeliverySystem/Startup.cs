@@ -8,6 +8,7 @@ using DeliverySystem.Data;
 using DeliverySystem.Models;
 using DeliverySystem.Repositories;
 using DeliverySystem.Repository;
+using Autofac;
 
 namespace DeliverySystem
 {
@@ -31,8 +32,11 @@ namespace DeliverySystem
                     .AddEntityFrameworkStores<ApplicationDbContext>()
                     .AddDefaultTokenProviders();
 
-                services.AddScoped<ApplicationDbInitializer>();
-                services.AddScoped<IProductsRepository, ProductsRepository>();
+            services.AddScoped<ApplicationDbInitializer>();
+            services.AddScoped<IDeliveriesRepository, DeliveriesRepository>();
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            
+
             services.AddMvc();
             }
 

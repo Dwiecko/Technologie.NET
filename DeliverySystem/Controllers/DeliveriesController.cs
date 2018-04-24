@@ -1,60 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using DeliverySystem.Data;
 using DeliverySystem.Models;
 using Microsoft.AspNetCore.Authorization;
 using DeliverySystem.Models.DeliveryViewModels;
+using DeliverySystem.Repository;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace DeliverySystem.Controllers
 {
     [Authorize(Roles = "Administrator, User")]
     public class DeliveriesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private IDeliveriesRepository _deliveriesRepository;
+        private IRepository<Category> _categoriesRepo;
+        private IRepository<Product> _productsRepo;
 
-        public DeliveriesController(ApplicationDbContext context)
+        public DeliveriesController(IDeliveriesRepository deliveriesRepository,
+                                    IRepository<Category> categoriesRepo,
+                                    IRepository<Product> productsRepo)
         {
-            _context = context;
-        }
+            _deliveriesRepository = deliveriesRepository;
+            _categoriesRepo = categoriesRepo;
+            _productsRepo = productsRepo;
+    }
 
         // GET: Deliveries
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var applicationDbContext = _context.Delivery.Include(d => d.Category).Include(d => d.Product);
             ViewBag.Test = CountAverageForAmounts();
-            return View(await applicationDbContext.ToListAsync());
+            return View(_deliveriesRepository.GetAll());
         }
 
         // GET: Deliveries/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
-            var delivery = await _context.Delivery
-                .Include(d => d.Category)
-                .Include(d => d.Product)
-                .SingleOrDefaultAsync(m => m.DeliveryID == id);
-            if (delivery == null)
-            {
-                return NotFound();
-            }
-
+            var delivery = _deliveriesRepository.Get(id);
             return View(delivery);
         }
 
         // GET: Deliveries/Create
         public IActionResult Create()
         {
-            ViewData["CategoryID"] = new SelectList(_context.Category, "CategoryID", "Name");
-            ViewData["ProductID"] = new SelectList(_context.Product, "ProductID", "Name");
+            ViewData["CategoryID"] = new SelectList(_categoriesRepo.GetAll(), "Id", "Name");
+            ViewData["ProductID"] = new SelectList(_productsRepo.GetAll(), "Id", "Name");
             return View();
         }
 
@@ -63,34 +55,33 @@ namespace DeliverySystem.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DeliveryID,ProductID,CategoryID,DeliveryStart,DeliveryEnd,PhoneNumber,City,StreetName,EstimatedWeight,Amount")] Delivery delivery)
+        public IActionResult Create(Delivery delivery)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(delivery);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                _deliveriesRepository.Create(delivery);
+                return View(delivery);
             }
-            ViewData["CategoryID"] = new SelectList(_context.Category, "CategoryID", "Name", delivery.CategoryID);
-            ViewData["ProductID"] = new SelectList(_context.Product, "ProductID", "Name", delivery.ProductID);
+            ViewData["CategoryID"] = new SelectList(_categoriesRepo.GetAll(), "Id", "Name", delivery.CategoryID);
+            ViewData["ProductID"] = new SelectList(_productsRepo.GetAll(), "Id", "Name", delivery.ProductID);
             return View(delivery);
         }
 
         // GET: Deliveries/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var delivery = await _context.Delivery.SingleOrDefaultAsync(m => m.DeliveryID == id);
+            var delivery = _deliveriesRepository.Get(id);
             if (delivery == null)
             {
                 return NotFound();
             }
-            ViewData["CategoryID"] = new SelectList(_context.Category, "CategoryID", "Name", delivery.CategoryID);
-            ViewData["ProductID"] = new SelectList(_context.Product, "ProductID", "Name", delivery.ProductID);
+            ViewData["CategoryID"] = new SelectList(_categoriesRepo.GetAll(), "Id", "Name", delivery.CategoryID);
+            ViewData["ProductID"] = new SelectList(_productsRepo.GetAll(), "Id", "Name", delivery.ProductID);
             return View(delivery);
         }
 
@@ -100,51 +91,27 @@ namespace DeliverySystem.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Edit(int id, [Bind("DeliveryID,ProductID,CategoryID,DeliveryStart,DeliveryEnd,PhoneNumber,City,StreetName,EstimatedWeight,Amount")] Delivery delivery)
+        public IActionResult Edit(int id, [Bind("Id,ProductID,CategoryID,DeliveryStart,DeliveryEnd,PhoneNumber,City,StreetName,EstimatedWeight,Amount")] Delivery delivery)
         {
-            if (id != delivery.DeliveryID)
+            if (id != delivery.Id)
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(delivery);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DeliveryExists(delivery.DeliveryID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["CategoryID"] = new SelectList(_context.Category, "CategoryID", "Name", delivery.CategoryID);
-            ViewData["ProductID"] = new SelectList(_context.Product, "ProductID", "Name", delivery.ProductID);
+            ViewData["CategoryID"] = new SelectList(_categoriesRepo.GetAll(), "Id", "Name", delivery.CategoryID);
+            ViewData["ProductID"] = new SelectList(_productsRepo.GetAll(), "Id", "Name", delivery.ProductID);
             return View(delivery);
         }
 
         [Authorize(Roles = "Administrator")]
         // GET: Deliveries/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var delivery = await _context.Delivery
-                .Include(d => d.Category)
-                .Include(d => d.Product)
-                .SingleOrDefaultAsync(m => m.DeliveryID == id);
+            var delivery = _deliveriesRepository.Get(id);
             if (delivery == null)
             {
                 return NotFound();
@@ -156,31 +123,30 @@ namespace DeliverySystem.Controllers
         // POST: Deliveries/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            var delivery = await _context.Delivery.SingleOrDefaultAsync(m => m.DeliveryID == id);
-            _context.Delivery.Remove(delivery);
-            await _context.SaveChangesAsync();
+            var delivery = _deliveriesRepository.Get(id);
+            _deliveriesRepository.Delete(id);
             return RedirectToAction(nameof(Index));
         }
 
         private bool DeliveryExists(int id)
         {
-            return _context.Delivery.Any(e => e.DeliveryID == id);
+            return _deliveriesRepository.GetAll().Any(e => e.Id == id);
         }
 
 
         public ActionResult CountAverageForAmounts()
         {
-            var result = _context.Delivery.Select(x => x.Amount).ToList();
+            var result = _deliveriesRepository.GetAll().Select(x => x.Amount).ToList();
 
             var averageOccurences = from row in result
-                            group row by row into rowsByValue
-                            select new CountAverageForWord
-                            {
-                                Word = rowsByValue.Key,
-                                Count = rowsByValue.Count()
-                            };
+                                    group row by row into rowsByValue
+                                    select new CountAverageForWord
+                                    {
+                                        Word = rowsByValue.Key,
+                                        Count = rowsByValue.Count()
+                                    };
 
             ViewBag.AverageForAmount = averageOccurences;
 

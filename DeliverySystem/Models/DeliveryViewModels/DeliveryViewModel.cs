@@ -1,17 +1,13 @@
 ﻿using DeliverySystem.Attributes;
-using DeliverySystem.Repositories;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DeliverySystem.Models
+namespace DeliverySystem.Models.DeliveryViewModels
 {
-    public class Delivery : IValidatableObject, IEntity
+    public class DeliveryViewModel
     {
-        public int Id { get; set; }
-
         [DisplayName("Product")]
         [ForeignKey("Product")]
         public int ProductID { get; set; }
@@ -50,15 +46,5 @@ namespace DeliverySystem.Models
 
         [Range(minimum: 1, maximum: 100000.00)]
         public decimal Amount { get; set; }
-
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            if (this.DeliveryEnd < this.DeliveryStart)
-            {
-                yield return
-                  new ValidationResult(errorMessage: "DeliveryEnd must be greater or equal to DeliveryStart",
-                                       memberNames: new[] { "DeliveryEnd" });
-            }
-        }
     }
 }

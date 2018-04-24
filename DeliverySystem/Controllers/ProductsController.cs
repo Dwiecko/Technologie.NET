@@ -1,23 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using DeliverySystem.Data;
-using DeliverySystem.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using DeliverySystem.Models;
 using DeliverySystem.Repositories;
+using DeliverySystem.Repository;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace DeliverySystem.Controllers
 {
     [Authorize(Roles = "Administrator, User")]
     public class ProductsController : Controller
     {
-        private IProductsRepository _productsRepository;
+        private IRepository<Product> _productsRepository;
 
-        public ProductsController(IProductsRepository productsRepository)
+        public ProductsController(IRepository<Product> productsRepository)
         {
             _productsRepository = productsRepository;
         }
@@ -44,11 +39,12 @@ namespace DeliverySystem.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind("ProductID,Name")] Product product)
+        public ActionResult Create([Bind("Id,Name")] Product product)
         {
             if (ModelState.IsValid)
             {
-                _productsRepository.Add(product);
+                _productsRepository.Create(product);
+                //Add(product);
                 return RedirectToAction("Index");
             }
 
@@ -58,7 +54,7 @@ namespace DeliverySystem.Controllers
         public ActionResult Edit(int? id)
         {
             Product product = _productsRepository.Get(id);
-            if (id != product.ProductID)
+            if (id != product.Id)
             {
                 return NotFound();
             }
@@ -68,7 +64,7 @@ namespace DeliverySystem.Controllers
         // POST: Products/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind("ProductID,Name")] Product product)
+        public ActionResult Edit([Bind("Id,Name")] Product product)
         {
             if (product == null)
             {
@@ -77,7 +73,7 @@ namespace DeliverySystem.Controllers
 
             if (ModelState.IsValid)
             {
-                _productsRepository.Edit(product);
+                _productsRepository.Update(product);
                 return RedirectToAction("Index");
             }
             return View(product);
@@ -101,8 +97,17 @@ namespace DeliverySystem.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int? id)
         {
+            if (id == null)
+            {
+                return BadRequest();
+            }
+            Product product = _productsRepository.Get(id);
+            if (product == null)
+            {
+                return BadRequest();
+            }
             _productsRepository.Delete(id);
             return RedirectToAction("Index");
         }

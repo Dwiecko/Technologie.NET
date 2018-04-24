@@ -11,9 +11,10 @@ using System;
 namespace DeliverySystem1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180411143351_Generic Repository Update")]
+    partial class GenericRepositoryUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,21 +74,21 @@ namespace DeliverySystem1.Migrations
 
             modelBuilder.Entity("DeliverySystem.Models.Category", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("CategoryID")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(30);
 
-                    b.HasKey("Id");
+                    b.HasKey("CategoryID");
 
                     b.ToTable("Category");
                 });
 
             modelBuilder.Entity("DeliverySystem.Models.Delivery", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("DeliveryID")
                         .ValueGeneratedOnAdd();
 
                     b.Property<decimal>("Amount");
@@ -111,7 +112,7 @@ namespace DeliverySystem1.Migrations
                     b.Property<string>("StreetName")
                         .IsRequired();
 
-                    b.HasKey("Id");
+                    b.HasKey("DeliveryID");
 
                     b.HasIndex("CategoryID");
 

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace DeliverySystem.Models.DeliveryViewModels
+﻿namespace DeliverySystem.Models.DeliveryViewModels
 {
     public class CountAverageForWord
     {

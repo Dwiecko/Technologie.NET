@@ -1,14 +1,11 @@
 ﻿using DeliverySystem.Attributes;
-using DeliverySystem.Repositories;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace DeliverySystem.Models
+namespace DeliverySystem.Models.ProductViewModels
 {
-    public class Product : IEntity
+    public class ProductViewModel
     {
-        public int Id { get; set; }
-
         [Required(AllowEmptyStrings = false)]
         [DisplayFormat(ConvertEmptyStringToNull = false)]
         [Capitalize]

@@ -11,9 +11,10 @@ using System;
 namespace DeliverySystem1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180417201443_update_generic_repository_add_foreign_keys")]
+    partial class update_generic_repository_add_foreign_keys
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

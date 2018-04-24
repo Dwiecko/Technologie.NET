@@ -14,6 +14,7 @@ namespace DeliverySystem.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            new DeliveriesMap(builder.Entity<Delivery>());
         }
 
         public DbSet<Category> Category { get; set; }
