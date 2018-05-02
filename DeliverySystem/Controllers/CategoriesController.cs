@@ -1,24 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using DeliverySystem.Data;
 using DeliverySystem.Models;
 using Microsoft.AspNetCore.Authorization;
-using DeliverySystem.Repository;
-using DeliverySystem.Repositories;
+using DeliverySystem.Repository.Doubles;
 
 namespace DeliverySystem.Controllers
 {
     [Authorize(Roles = "Administrator, User")]
     public class CategoriesController : Controller
     {
-        private IRepository<Category> _categoriesRepository;
+        private ICategoriesRepository _categoriesRepository;
 
-        public CategoriesController(IRepository<Category> categoriesRepository)
+        public CategoriesController(ICategoriesRepository categoriesRepository)
         {
             _categoriesRepository = categoriesRepository;
         }
@@ -26,8 +19,10 @@ namespace DeliverySystem.Controllers
         // GET: Categorys
         [HttpGet]
         public IActionResult Index()
+            
         {
-            return View(_categoriesRepository.GetAll().AsEnumerable());
+            throw new System.Exception();
+           // return View(_categoriesRepository.GetAll().AsEnumerable());
         }
 
         // GET: Categorys/Details/5

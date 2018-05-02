@@ -9,6 +9,7 @@ using DeliverySystem.Models;
 using DeliverySystem.Repositories;
 using DeliverySystem.Repository;
 using Autofac;
+using DeliverySystem.Repository.Doubles;
 
 namespace DeliverySystem
 {
@@ -33,9 +34,10 @@ namespace DeliverySystem
                     .AddDefaultTokenProviders();
 
             services.AddScoped<ApplicationDbInitializer>();
-            services.AddScoped<IDeliveriesRepository, DeliveriesRepository>();
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            
+            services.AddTransient<IDeliveriesRepository, DeliveriesRepository>();
+            services.AddTransient<ICategoriesRepository, FakeCategoryRepository>();
+            services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
+
 
             services.AddMvc();
             }
@@ -48,17 +50,14 @@ namespace DeliverySystem
                     app.UseDeveloperExceptionPage();
                     app.UseBrowserLink();
                     app.UseDatabaseErrorPage();
-                    app.UseStaticFiles();
-
-
+                
                 }
                 else
                 {
                     app.UseExceptionHandler("/Home/Error");
                 }
-
+                app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
                 app.UseStaticFiles();
-
                 app.UseAuthentication();
 
                 dbInitializer.Seed();

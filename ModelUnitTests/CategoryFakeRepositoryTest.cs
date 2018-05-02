@@ -8,10 +8,10 @@ using Xunit;
 
 namespace ModelUnitTests
 {
-    public class CategoryControllerTest
+    public class CategoryFakeRepositoryTest
     {
         [Fact]
-        [Trait("Categories Controller", "returns correct")]
+        [Trait("Fake Repository: Categories Controller", "returns correct")]
         public void NumberOfModels_From_Repository()
         {
             var items = new List<Category>
@@ -30,9 +30,8 @@ namespace ModelUnitTests
 
             Assert.Equal(2, model.Count);
         }
-
         [Fact]
-        [Trait("Categories Controller", "returns empty")]
+        [Trait("Fake Repository: Categories Controller", "returns empty")]
         public void Model_When_ThereAreNoResults_From_Repository()
         {
             var repositoryMock = new Mock<ICategoriesRepository>();
@@ -46,9 +45,9 @@ namespace ModelUnitTests
 
             Assert.Empty(model);
         }
-       
+
         [Fact]
-        [Trait("Categories Controller", "returns correct")]
+        [Trait("Fake Repository: Categories Controller", "returns correct")]
         public void Model_After_GivingExistingCategoryId()
         {
             // Arrange
