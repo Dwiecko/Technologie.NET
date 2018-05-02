@@ -43,9 +43,6 @@ namespace UIUnitTests
         [Category("UI Field Validation")]
         public void GivesErrorAfterPassingInCorrectData()
         {
-            _driver.Url = _baseURL + "Account/Login";
-            var loginPage = new LogInPage(_driver);
-
             loginPage.Email.SendKeys("admin@");
             loginPage.Password.SendKeys("Test!23");
             loginPage.Submit.Click();
