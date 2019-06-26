@@ -1,13 +1,14 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DeliverySystem.Repository
 {
     public interface IRepository<T>
     {
-        void Create(T entity);
-        T Get(int? id);
-        IEnumerable<T> GetAll();
-        void Update(T entity);
-        void Delete(int? id);
+        Task Create(T entity);
+        Task<T> Get(int? id);
+        Task<IEnumerable<T>> GetAll();
+        Task Update(T entity);
+        Task Delete(int? id);
     }
 }

@@ -1,28 +1,34 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using DeliverySystem.Models;
-using DeliverySystem.Models.ManageViewModels;
-
-namespace DeliverySystem.Controllers
+﻿namespace DeliverySystem.Controllers
 {
+    #region Usings
+
+    using System;
+    using System.Linq;
+    using System.Text;
+    using System.Text.Encodings.Web;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Authentication;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
+    using DeliverySystem.Models;
+    using DeliverySystem.Models.ManageViewModels;
+
+    #endregion
+
     [Authorize]
     [Route("[controller]/[action]")]
     public class ManageController : Controller
     {
+        #region Fields and constructors
+
+        private const string AuthenicatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
+
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger _logger;
         private readonly UrlEncoder _urlEncoder;
-
-        private const string AuthenicatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
 
         public ManageController(
           UserManager<ApplicationUser> userManager,
@@ -38,6 +44,10 @@ namespace DeliverySystem.Controllers
 
         [TempData]
         public string StatusMessage { get; set; }
+
+        #endregion
+
+        #region Methods
 
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -324,7 +334,7 @@ namespace DeliverySystem.Controllers
             return RedirectToAction(nameof(EnableAuthenticator));
         }
 
-        
+        #endregion
 
         #region Helpers
 

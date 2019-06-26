@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using DeliverySystem.Models;
-
-namespace DeliverySystem.Controllers
+﻿namespace DeliverySystem.Controllers
 {
+    #region Usings
+
+    using System.Diagnostics;
+    using Microsoft.AspNetCore.Mvc;
+    using DeliverySystem.Models;
+
+    #endregion
+
     public class HomeController : Controller
     {
+        #region Methods
+
         public IActionResult Index()
         {
             return View();
@@ -39,5 +41,7 @@ namespace DeliverySystem.Controllers
 
             return View(errorViewModel);
         }
+
+        #endregion
     }
 }

@@ -1,15 +1,21 @@
-﻿using DeliverySystem.Models;
-using DeliverySystem.Repositories;
-using DeliverySystem.Repository;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-
-namespace DeliverySystem.Controllers
+﻿namespace DeliverySystem.Controllers
 {
+    #region Usings
+
+    using DeliverySystem.Models;
+    using DeliverySystem.Repository;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
+    using System.Linq;
+    using System.Threading.Tasks;
+
+    #endregion
+
     [Authorize(Roles = "Administrator, User")]
     public class ProductsController : Controller
     {
+        #region Fields and constructors
+
         private IRepository<Product> _productsRepository;
 
         public ProductsController(IRepository<Product> productsRepository)
@@ -17,43 +23,49 @@ namespace DeliverySystem.Controllers
             _productsRepository = productsRepository;
         }
 
+        #endregion
+
+        #region Methods
+
         // GET: Products
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(_productsRepository.GetAll().AsEnumerable());
+            var products = await _productsRepository.GetAll();
+
+            return View(products);
         }
 
         // GET: Products/Details/5
-        public IActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
-            var product = _productsRepository.Get(id);
+            var product = await _productsRepository.Get(id);
             if (product == null) return NotFound();
 
             return View(product);
         }
-        public ActionResult Create()
+        public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind("Id,Name")] Product product)
+        public async Task<IActionResult> Create([Bind("Id,Name")] Product product)
         {
             if (ModelState.IsValid)
             {
-                _productsRepository.Create(product);
-                //Add(product);
+                await _productsRepository.Create(product);
+
                 return RedirectToAction("Index");
             }
 
             return View(product);
         }
 
-        public ActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            Product product = _productsRepository.Get(id);
+            var product = await _productsRepository.Get(id);
             if (id != product.Id)
             {
                 return NotFound();
@@ -64,7 +76,7 @@ namespace DeliverySystem.Controllers
         // POST: Products/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind("Id,Name")] Product product)
+        public async Task<IActionResult> Edit([Bind("Id,Name")] Product product)
         {
             if (product == null)
             {
@@ -73,20 +85,21 @@ namespace DeliverySystem.Controllers
 
             if (ModelState.IsValid)
             {
-                _productsRepository.Update(product);
+                await _productsRepository.Update(product);
                 return RedirectToAction("Index");
             }
             return View(product);
         }
 
         // POST: Products/Delete/5
-        public ActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return BadRequest();
             }
-            Product product = _productsRepository.Get(id);
+
+            var product = await _productsRepository.Get(id);
             if (product == null)
             {
                 return BadRequest();
@@ -97,19 +110,19 @@ namespace DeliverySystem.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int? id)
+        public async Task<IActionResult> DeleteConfirmed(int? id)
         {
-            if (id == null)
-            {
-                return BadRequest();
-            }
-            Product product = _productsRepository.Get(id);
+            if (id == null) return BadRequest();
+
+            Product product = await _productsRepository.Get(id);
             if (product == null)
             {
                 return BadRequest();
             }
-            _productsRepository.Delete(id);
+            await _productsRepository.Delete(id);
             return RedirectToAction("Index");
         }
+
+        #endregion
     }
 }

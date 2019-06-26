@@ -1,62 +1,75 @@
-using DeliverySystem.Data;
-using DeliverySystem.Repository;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace DeliverySystem.Repositories
 {
+    #region Usings
+
+    using DeliverySystem.Data;
+    using DeliverySystem.Repository;
+    using Microsoft.EntityFrameworkCore;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+
+    #endregion
+
     public class Repository<T> : IRepository<T> where T : class, IEntity
     {
+        #region Fields and constructors
+
         private readonly ApplicationDbContext context;
         private DbSet<T> entities;
+
+        #endregion
+
+        #region Methods
 
         public Repository(ApplicationDbContext context)
         {
             this.context = context;
             entities = context.Set<T>();
         }
-        public IEnumerable<T> GetAll()
+        public async Task<IEnumerable<T>> GetAll()
         {
-            return entities.AsEnumerable();
+            return await entities.ToAsyncEnumerable().ToList();
         }
 
-        public T Get(int? id)
+        public async Task<T> Get(int? id)
         {
-            return entities.SingleOrDefault(s => s.Id == id);
+            return await entities.SingleOrDefaultAsync(s => s.Id == id);
         }
-        public void Create(T entity)
+        public async Task Create(T entity)
         {
             if (entity == null)
             {
                 throw new ArgumentNullException("Entity is empty");
             }
             entities.Add(entity);
-            context.SaveChanges();
+
+            await context.SaveChangesAsync();
         }
 
-        public void Update(T entity)
+        public async Task Update(T entity)
         {
             if (entity == null)
             {
                 throw new ArgumentNullException("Entity is empty");
             }
-            
+
             entities.Update(entity);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
-        public void Delete(int? id)
+        public async Task Delete(int? id)
         {
-            var entity = Get(id);
+            var entity = await Get(id);
             if (entity == null)
             {
                 throw new ArgumentNullException("Entity is empty");
             }
             entities.Remove(entity);
-            context.SaveChanges();
-        }
 
+            await context.SaveChangesAsync();
+        }
+        #endregion
     }
 }

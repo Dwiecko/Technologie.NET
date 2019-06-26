@@ -1,60 +1,70 @@
-﻿using DeliverySystem.Data;
-using DeliverySystem.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace DeliverySystem.Repository
+﻿namespace DeliverySystem.Repository
 {
+    #region Usings
+
+    using DeliverySystem.Data;
+    using DeliverySystem.Models;
+    using Microsoft.EntityFrameworkCore;
+    using System.Linq;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+
+    #endregion
+
     public interface IDeliveriesRepository
     {
-        void Create(Delivery delivery);
-        Delivery Get(int? id);
-        IEnumerable<Delivery> GetAll();
-        void Update(Delivery entity);
-        void Delete(int? id);
+        Task Create(Delivery delivery);
+        Task<Delivery> Get(int? id);
+        Task<IEnumerable<Delivery>> GetAll();
+        Task Update(Delivery entity);
+        Task Delete(int? id);
     }
-    public class DeliveriesRepository: IDeliveriesRepository
+    public class DeliveriesRepository : IDeliveriesRepository
     {
+        #region Fields and Constructors
+
         private readonly ApplicationDbContext _context;
 
-        public DeliveriesRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        public DeliveriesRepository(ApplicationDbContext context) => _context = context;
+
+        #endregion
+
+        #region Methods
 
         // GET: Deliveries1/Details/5
-        public Delivery Get(int? id)
+        public async Task<Delivery> Get(int? id)
         {
-           return _context.Delivery.Include(x => x.Category).Include(y => y.Product).FirstOrDefault(z => z.Id == id);
+            return await _context.Delivery.Include(x => x.Category).Include(y => y.Product).FirstOrDefaultAsync(z => z.Id == id);
         }
-        public IEnumerable<Delivery> GetAll()
+        public async Task<IEnumerable<Delivery>> GetAll()
         {
-            return _context.Delivery.Include(x => x.Category).Include(y => y.Product).AsEnumerable();
+            return await _context.Delivery.Include(x => x.Category).Include(y => y.Product).ToAsyncEnumerable().ToList();
         }
 
-        public void Create(Delivery delivery)
+        public async Task Create(Delivery delivery)
         {
             _context.Delivery.Add(delivery);
-            _context.SaveChanges();
+
+            await _context.SaveChangesAsync();
         }
 
-     
-        public void Update(Delivery delivery)
+        public async Task Update(Delivery delivery)
         {
             _context.Delivery.Update(delivery);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-
-        public void Delete(int? id)
+        public async Task Delete(int? id)
         {
             var delivery = _context.Delivery
                 .Include(d => d.Category)
                 .Include(d => d.Product)
                 .SingleOrDefault(m => m.Id == id);
+
             _context.Remove(delivery);
-            _context.SaveChanges();
+
+            await _context.SaveChangesAsync();
         }
+        #endregion
     }
 }
