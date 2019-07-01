@@ -14,24 +14,24 @@ using DeliverySystem.Repository.Doubles;
 namespace DeliverySystem
 {
     public class Startup
+    {
+
+        public Startup(IConfiguration configuration)
         {
+            Configuration = configuration;
+        }
 
-            public Startup(IConfiguration configuration)
-            {
-                Configuration = configuration;
-            }
-
-            public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; }
 
 
-            public void ConfigureServices(IServiceCollection services)
-            {
-                services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-                services.AddIdentity<ApplicationUser, IdentityRole>()
-                    .AddEntityFrameworkStores<ApplicationDbContext>()
-                    .AddDefaultTokenProviders();
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
             services.AddScoped<ApplicationDbInitializer>();
             services.AddTransient<IDeliveriesRepository, DeliveriesRepository>();
@@ -40,34 +40,32 @@ namespace DeliverySystem
 
 
             services.AddMvc();
-            }
+        }
 
 
-            public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationDbInitializer dbInitializer)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationDbInitializer dbInitializer)
+        {
+            if (env.IsDevelopment())
             {
-                if (env.IsDevelopment())
-                {
-                    app.UseDeveloperExceptionPage();
-                    app.UseBrowserLink();
-                    app.UseDatabaseErrorPage();
-                
-                }
-                else
-                {
-                    app.UseExceptionHandler("/Home/Error");
-                }
-                app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
-                app.UseStaticFiles();
-                app.UseAuthentication();
-
-                dbInitializer.Seed();
-
-                app.UseMvc(routes =>
-                {
-                    routes.MapRoute(
-                        name: "default",
-                        template: "{controller=Home}/{action=Index}/{id?}");
-                });
+                app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
             }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+            }
+            app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
+            app.UseStaticFiles();
+            app.UseAuthentication();
+
+            dbInitializer.Seed();
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
         }
     }
+}

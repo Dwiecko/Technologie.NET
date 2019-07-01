@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using DeliverySystem.Models;
-using DeliverySystem.Models.AccountViewModels;
-
-namespace DeliverySystem.Controllers
+﻿namespace DeliverySystem.Controllers
 {
+    #region Usings
+
+    using System;
+    using System.Security.Claims;
+    using System.Threading.Tasks;
+    using DeliverySystem.Models;
+    using DeliverySystem.Models.AccountViewModels;
+    using Microsoft.AspNetCore.Authentication;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
+
+    #endregion
+
     [Authorize]
     [Route("[controller]/[action]")]
     public class AccountController : Controller
@@ -78,7 +78,7 @@ namespace DeliverySystem.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
-        
+
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Lockout()
@@ -226,7 +226,7 @@ namespace DeliverySystem.Controllers
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
-        
+
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ForgotPasswordConfirmation()
