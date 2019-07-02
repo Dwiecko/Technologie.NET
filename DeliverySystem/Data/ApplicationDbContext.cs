@@ -1,8 +1,14 @@
 ﻿namespace DeliverySystem.Data
 {
-    using DeliverySystem.Models;
+    #region Usings
+
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
+
+    #endregion
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
