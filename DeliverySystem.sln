@@ -5,12 +5,6 @@ VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeliverySystem", "DeliverySystem\DeliverySystem.csproj", "{00D5D49B-9381-4941-A22B-8630144E19F9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelUnitTests", "ModelUnitTests\ModelUnitTests.csproj", "{5955D32A-9AAD-467E-91E0-A9AF703BB750}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UIUnitTests", "UIUnitTests\UIUnitTests.csproj", "{A4204D62-0EEC-4022-ACBB-CB33DA305ADC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodedUIModelUnitTests", "CodedUIModelUnitTests\CodedUIModelUnitTests.csproj", "{07E7E858-A0B7-4FC9-966D-56B94ECD9E32}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -10,12 +10,12 @@ using DeliverySystem.Repositories;
 using DeliverySystem.Repository;
 using Autofac;
 using DeliverySystem.Repository.Doubles;
+using Microsoft.AspNetCore.Hosting;
 
 namespace DeliverySystem
 {
     public class Startup
     {
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -38,12 +38,11 @@ namespace DeliverySystem
             services.AddTransient<ICategoriesRepository, FakeCategoryRepository>();
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
 
-
             services.AddMvc();
         }
 
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationDbInitializer dbInitializer)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbInitializer dbInitializer)
         {
             if (env.IsDevelopment())
             {
