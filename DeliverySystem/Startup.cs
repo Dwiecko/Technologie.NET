@@ -10,24 +10,24 @@ using DeliverySystem.Repositories;
 using DeliverySystem.Repository;
 using Autofac;
 using DeliverySystem.Repository.Doubles;
-using Microsoft.AspNetCore.Hosting;
 
 namespace DeliverySystem
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
+        private IHostingEnvironment _env { get; }
         public IConfiguration Configuration { get; }
 
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
+        {
+            Configuration = configuration;
+            _env = env;
+        }
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -41,8 +41,7 @@ namespace DeliverySystem
             services.AddMvc();
         }
 
-
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbInitializer dbInitializer)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationDbInitializer dbInitializer)
         {
             if (env.IsDevelopment())
             {
@@ -57,7 +56,7 @@ namespace DeliverySystem
             app.UseStaticFiles();
             app.UseAuthentication();
 
-            dbInitializer.Seed();
+            //dbInitializer.Seed();
 
             app.UseMvc(routes =>
             {
