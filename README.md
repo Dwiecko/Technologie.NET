@@ -3,3 +3,7 @@ Aplikacja internetowa wykonana na przedmiot Technologie .NET w technologii ASP .
 
 ## Update 26-06-2019
 ### Rozszerzenie rozwiązania o nowe technologie
+
+
+## Running docker:
+### Linux - run command: sudo docker build -t deliverysystem .
