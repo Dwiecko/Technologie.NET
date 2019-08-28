@@ -18,9 +18,7 @@ namespace DeliverySystem.Data
 
         public void Seed()
         {
-
             _context.Database.Migrate();
-
 
             if (!_context.Roles.Any())
             {
@@ -28,7 +26,6 @@ namespace DeliverySystem.Data
                 {
                     Roles.Administrator,
                     Roles.User,
-
                 };
 
                 foreach (var roleName in roleNames)
@@ -37,7 +34,6 @@ namespace DeliverySystem.Data
                     _context.Roles.Add(role);
                 }
             }
-
 
             if (!_context.ApplicationUsers.Any())
             {
@@ -58,7 +54,5 @@ namespace DeliverySystem.Data
 
             _context.SaveChanges();
         }
-
     }
-
 }
